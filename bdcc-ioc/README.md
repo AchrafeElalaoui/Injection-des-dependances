@@ -23,6 +23,7 @@ public interface IMetier {
 }
 ```
 4. Créer une implémentation de cette interface en utilisant le couplage faible
+## 
 a) injection des dépendances via le setter (instonciation statique => new) 
 ```java
 public class MetierImpl implements IMetier {
@@ -59,7 +60,8 @@ public class MetierImpl implements IMetier {
 }
 ```
 5. Créer une classe de test
-a) injection des dépendances via le setter (instonciation statique => new)
+## instonciation statique => new
+a) injection des dépendances via le setter 
 ```java
 public class presentation1 {
     public static void main(String[] args) {
@@ -71,7 +73,7 @@ public class presentation1 {
     }
 }
 ```
-b) injection des dépendances via le constructeur (instonciation statique => new)
+b) injection des dépendances via le constructeur 
 ```java
 public class presentation1 {
     public static void main(String[] args) {
@@ -79,6 +81,33 @@ public class presentation1 {
         MetierImpl  metier = new MetierImpl(dao);
         double result = metier.calcul();
         System.out.println("result = " + result);
+    }
+}
+```
+## instonciation dunamique
+```java
+
+public class prsentation2 {
+    public static void main(String[] args) {
+        try {
+            Scanner scanner = new Scanner(new File("config.txt"));
+            String daoClassName = scanner.nextLine();
+            Class cDao = Class.forName(daoClassName);
+            IDao dao = (IDao) cDao.getConstructor().newInstance();
+
+            String metierClassName = scanner.nextLine();
+            Class cMetier = Class.forName(metierClassName);
+
+            // using the constructor that takes an IDao object as an argument
+            IMetier metierC = (IMetier) cMetier.getConstructor(IDao.class).newInstance(dao);
+
+            // using the default constructor and then calling the setDao method
+            IMetier metierS = (IMetier) cMetier.getConstructor().newInstance();
+            Method setDao = cMetier.getMethod("setDao", IDao.class);
+            setDao.invoke(metierS, dao);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 }
 ```

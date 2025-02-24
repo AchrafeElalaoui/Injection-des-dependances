@@ -6,9 +6,8 @@ import metier.MetierImpl;
 
 public class presentation1 {
     public static void main(String[] args) {
-        MetierImpl  metier = new MetierImpl();
         DaoImpl dao = new DaoImpl();
-        metier.setDao(dao);
+        MetierImpl  metier = new MetierImpl(dao);
         double result = metier.calcul();
         System.out.println("result = " + result);
     }

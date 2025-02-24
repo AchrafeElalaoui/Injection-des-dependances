@@ -23,6 +23,7 @@ public interface IMetier {
 }
 ```
 4. Créer une implémentation de cette interface en utilisant le couplage faible
+a) injection des dépendances via le setter (instonciation statique => new) 
 ```java
 public class MetierImpl implements IMetier {
     private IDao dao = null;
@@ -37,13 +38,45 @@ public class MetierImpl implements IMetier {
     }
 }
 ```
+b) injection des dépendances via le constructeur (instonciation statique => new)
+```java
+public class MetierImpl implements IMetier {
+    private IDao dao = null;
+    
+    public MetierImpl() {
+        dao = new DaoImpl();
+    }
+    
+    public MetierImpl(IDao dao) {
+        this.dao = dao;
+    }
+
+    public double calcul() {
+        double temp = dao.gitData();
+        double result = temp * 23;
+        return result;
+    }
+}
+```
 5. Créer une classe de test
+a) injection des dépendances via le setter (instonciation statique => new)
 ```java
 public class presentation1 {
     public static void main(String[] args) {
         MetierImpl  metier = new MetierImpl();
         DaoImpl dao = new DaoImpl();
         metier.setDao(dao);
+        double result = metier.calcul();
+        System.out.println("result = " + result);
+    }
+}
+```
+b) injection des dépendances via le constructeur (instonciation statique => new)
+```java
+public class presentation1 {
+    public static void main(String[] args) {
+        DaoImpl dao = new DaoImpl();
+        MetierImpl  metier = new MetierImpl(dao);
         double result = metier.calcul();
         System.out.println("result = " + result);
     }

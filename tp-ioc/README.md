@@ -24,7 +24,7 @@ public interface IMetier {
 ```
 4. Créer une implémentation de cette interface en utilisant le couplage faible
 ## 
-a) injection des dépendances via le setter (instonciation statique => new) 
+### a) injection des dépendances via le setter (instonciation statique => new) 
 ```java
 public class MetierImpl implements IMetier {
     private IDao dao = null;
@@ -39,7 +39,7 @@ public class MetierImpl implements IMetier {
     }
 }
 ```
-b) injection des dépendances via le constructeur (instonciation statique => new)
+### b) injection des dépendances via le constructeur (instonciation statique => new)
 ```java
 public class MetierImpl implements IMetier {
     private IDao dao = null;
@@ -61,7 +61,7 @@ public class MetierImpl implements IMetier {
 ```
 5. Créer une classe de test
 ## instonciation statique => new
-a) injection des dépendances via le setter 
+### a) injection des dépendances via le setter 
 ```java
 public class presentation1 {
     public static void main(String[] args) {
@@ -73,7 +73,7 @@ public class presentation1 {
     }
 }
 ```
-b) injection des dépendances via le constructeur 
+### b) injection des dépendances via le constructeur 
 ```java
 public class presentation1 {
     public static void main(String[] args) {
@@ -85,7 +85,7 @@ public class presentation1 {
 }
 ```
 ## instonciation dunamique
-a) injection des dépendances utilisons spring via xml
+### a) injection des dépendances utilisons spring via xml.
 the .xml file :
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -111,6 +111,60 @@ public class PresSpringVXML {
     }
 }
 ```
+### b) injection des dépendances utilisons spring via les annotations.
+class `DaoImpl` :
+```java
+@Component("dao")
+public class DaoImpl implements IDao {
+    public double gitData() {
+        System.out.println("version of database");
+        double temp = 34.5;
+        return temp;
+    }
+}
+```
+#### utilisons `@Autowired` :
+class `MetierImpl` :
+```java
+@Component("metier")
+public class MetierImpl implements IMetier {
+    @Autowired
+    private IDao dao = null;
+    
+    public double calcul() {
+        double temp = dao.gitData();
+        double result = temp * 23;
+        return result;
+    }
+
+    public void setDao(IDao dao) {
+        this.dao = dao;
+    }
+}
+```
+!!!!!! the `@Autowired` annotation is not recommended because it Doesn't go along with the encapsulation, so it's better to use the constructors .
+
+#### utilisons les constructors :
+```java
+@Component("metier")
+public class MetierImpl implements IMetier {
+    private IDao dao = null;
+    
+    public MetierImpl(IDao dao) {
+        this.dao = dao;
+    }
+    public double calcul() {
+        double temp = dao.gitData();
+        double result = temp * 23;
+        return result;
+    }
+    public void setDao(IDao dao) {
+        this.dao = dao;
+    }
+}
+```
+!!!!! we must use only one constructor , because the injection of dependencies won't work , This goes back to that spring will be confused what constructor to use.
+
 #### result
 ```text
 version of database

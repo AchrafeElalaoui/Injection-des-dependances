@@ -85,29 +85,29 @@ public class presentation1 {
 }
 ```
 ## instonciation dunamique
+a) injection des dépendances utilisons spring via xml
+the .xml file :
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <bean id="dao" class="dao.DaoImpl"></bean>
+    <bean id="metier" class="metier.MetierImpl">
+        <!-- injection via setter -->
+        <property name="dao" ref="dao"></property>
+        <!-- injection via constructor -->
+        <constructor-arg ref="dao"></constructor-arg>
+    </bean>
+
+</beans>
+```
 ```java
-
-public class prsentation2 {
+public class PresSpringVXML {
     public static void main(String[] args) {
-        try {
-            Scanner scanner = new Scanner(new File("config.txt"));
-            String daoClassName = scanner.nextLine();
-            Class cDao = Class.forName(daoClassName);
-            IDao dao = (IDao) cDao.getConstructor().newInstance();
-
-            String metierClassName = scanner.nextLine();
-            Class cMetier = Class.forName(metierClassName);
-
-            // using the constructor that takes an IDao object as an argument
-            IMetier metierC = (IMetier) cMetier.getConstructor(IDao.class).newInstance(dao);
-
-            // using the default constructor and then calling the setDao method
-            IMetier metierS = (IMetier) cMetier.getConstructor().newInstance();
-            Method setDao = cMetier.getMethod("setDao", IDao.class);
-            setDao.invoke(metierS, dao);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
+        ApplicationContext context = new ClassPathXmlApplicationContext("config.xml");
+        IMetier metier = context.getBean(IMetier.class);
+        System.out.println("Result"+metier.calcul());
     }
 }
 ```
